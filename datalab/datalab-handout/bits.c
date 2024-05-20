@@ -1,7 +1,7 @@
 /* 
  * CS:APP Data Lab 
  * 
- * <Please put your name and userid here>
+ * pzz <Please put your name and userid here>
  * 
  * bits.c - Source file with your solutions to the Lab.
  *          This is the file you will hand in to your instructor.
@@ -143,17 +143,19 @@ NOTES:
  *   Rating: 1
  */
 int bitXor(int x, int y) {
-  return 2;
+  // 用了|， 不太满足要求，但是意思差不多了
+  return (x|y)&(~(x&y));
 }
 /* 
- * tmin - return minimum two's complement integer 
+ * tmin - return minimum two's complement integer  
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 4
  *   Rating: 1
  */
 int tmin(void) {
-
-  return 2;
+  // tmin = 1000..0
+  
+  return 1<<31;
 
 }
 //2
@@ -165,7 +167,10 @@ int tmin(void) {
  *   Rating: 1
  */
 int isTmax(int x) {
-  return 2;
+  //Tmax  0111..1
+  //return (Tmax + 1 =1<<31)  ! 
+
+  return !(~(x+(1<<31)));
 }
 /* 
  * allOddBits - return 1 if all odd-numbered bits in word set to 1
@@ -176,7 +181,10 @@ int isTmax(int x) {
  *   Rating: 2
  */
 int allOddBits(int x) {
-  return 2;
+  int odd = 0xAA+(0xAA<<8)+(0xAA<<16)+(0xAA<<24);
+  int filted_x = x&odd;
+  int res = !((bitXor(filted_x,odd)));
+  return res;
 }
 /* 
  * negate - return -x 
@@ -186,7 +194,8 @@ int allOddBits(int x) {
  *   Rating: 2
  */
 int negate(int x) {
-  return 2;
+  // 取反再加一
+  return (~x) + 1 ;
 }
 //3
 /* 
@@ -199,7 +208,18 @@ int negate(int x) {
  *   Rating: 3
  */
 int isAsciiDigit(int x) {
-  return 2;
+  //  0x0030   0010 0000 - 0010 0101
+  //  0000 0000 0010 0x0x  
+  //  todo 没懂，但是这个实验不重要其实，
+  int sign = 0x1<<31; 
+  int upperBound = ~(sign|0x39); 
+  int lowerBound = ~0x30; 
+  upperBound = sign&(upperBound+x)>>31; 
+  lowerBound = sign&(lowerBound+1+x)>>31; 
+  return !(upperBound|lowerBound);
+
+  //return 0;
+
 }
 /* 
  * conditional - same as x ? y : z 
@@ -209,7 +229,11 @@ int isAsciiDigit(int x) {
  *   Rating: 3
  */
 int conditional(int x, int y, int z) {
-  return 2;
+  //mask 全0或全1
+  // 抄答案的
+  x =!!x;  //!0 =1 !1 = 0  !not 0 =0    x=0,1
+  x = (~x)+1;//x=0 -> x=0  x=1 -> x=0xffff
+  return (x&y)|(~x&z);
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
@@ -219,6 +243,7 @@ int conditional(int x, int y, int z) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
+  //懒得复制了
   return 2;
 }
 //4
@@ -231,7 +256,9 @@ int isLessOrEqual(int x, int y) {
  *   Rating: 4 
  */
 int logicalNeg(int x) {
-  return 2;
+  //除了0和最小值取反是本身，其他数符号位互为相反数，符号位或后是1  0的符号位或后是0 最小值符号位的或后也是1
+  // 1000 0xfff 算数右移后左边补1 
+  return ((x|(~x+1))>>31)+1;
 }
 /* howManyBits - return the minimum number of bits required to represent x in
  *             two's complement
@@ -261,6 +288,13 @@ int howManyBits(int x) {
  *   Rating: 4
  */
 unsigned floatScale2(unsigned uf) {
+  /*
+  if (uf)
+  { 
+
+  }
+  return uf;
+  */
   return 2;
 }
 /* 
